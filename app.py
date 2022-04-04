@@ -31,8 +31,8 @@ df_users = pd.read_json('users.json')
 
 
 ###Sidebar layout   
-#st.sidebar.image("./NPO.jpg", use_column_width=True)
-#st.sidebar.title('Welcome to the NPO')
+st.sidebar.image("./NPO.jpg", use_column_width=True)
+st.sidebar.title('Welcome to the NPO')
 
 #add_selectbox = st.sidebar.selectbox(
 #    "How would you like to be contacted?", 
@@ -42,6 +42,10 @@ df_users = pd.read_json('users.json')
 # open the activities json file
 with open('activities.json') as json_file:
   users_activities = json.load(json_file)
+
+## Reading ratings user-item matrix
+# st.session_state['ratings'] = pd.read_csv('save_ratings.csv')
+
 
 #Main page layout:
 #st.image("./NPO.jpg", use_column_width=True)
@@ -62,6 +66,8 @@ if 'activities' not in st.session_state:
 #authenticate
 a.authenticate()
 
+#Select title
+df_titles = df_npo[df_npo['titles'] == st.session_state['titles']]
 
 #
 df_npomroep = df_npo[df_npo['titles'] == st.session_state['titles']] 
@@ -88,7 +94,13 @@ else:
       selectbox = st.selectbox(
         "Rate the show", 
         ('1', '2', '3', '4', '5')) 
-
+      st.write(se
+      #Explicit and implicit feedback:
+     # with st.expander('Rate the show'):
+     #   st.button('👍', key=random(), on_click=t.activity, args=(df_titles['titles'].values[0], 'Like' ))  
+     #   st.button('👎', key=random(), on_click=t.activity, args=(df_titles['titles'].values[0], 'Dislike')) 
+        
+        
     #Shows from same k_means cluster 
     st.subheader('Similar shows like ' + st.session_state['titles'])
     df_recommendations = df_npo[df_npo['k_means'] == df_npomroep['k_means'].iloc[0]].sample(5)
@@ -111,15 +123,12 @@ else:
     option = st.selectbox(
       'Select your favorite show and click play to start watching!',
       (df_npo['titles']))
-    df = df_npo[df_npo['titles'] == option] 
+    df = df_npo[df_npo['titles'] == option]  
     t.recommendations(df)
 
 
 
-    #Explicit and implicit feedback:
-    with st.expander('Implicit and Explicit feedback'):
-      st.button('👍', key=random(), on_click=t.activity, args=(df_npo['ID'], 'Like' ))  
-      st.button('👎', key=random(), on_click=t.activity, args=(df_npo['ID'], 'Dislike')) 
+    
 
 
     #Shows from nature genre:

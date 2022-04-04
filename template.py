@@ -8,7 +8,11 @@ import datetime
 def save_activities():
   with open('activities.json', 'w') as outfile:
     json.dump(st.session_state['activities'], outfile)
-
+    
+def save_ratings():
+  with open('save_ratings.csv', 'w') as outfile:
+    st.session_state['ratings'].to_csv(outfile)
+    
 # function that processes an activity
 def activity(id, activity): 
   data = {'content_id': id, 'activity': activity, 'user_id': st.session_state['user'], 'datetime': str(datetime.datetime.now())}
