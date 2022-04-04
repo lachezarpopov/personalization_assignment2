@@ -1,3 +1,13 @@
-[{"name":"Amaru","id":1, "password": "Amaru"},
-{"name":"David","id":2, "password": "jadorelescroquettes"},
-{"name":"Erik","id":3, "password": "ikbengekopkroketjes"}]
+[{"name":"Amaru","id":100, "password": "Amaru", "age": 99, "persona": "test"},
+ {"name":"Laila", "id":1, "password": "laila15", "age": 15, "persona": "ambitiousyouth"},
+ {"name":"Leon", "id":2, "password": "leon18", "age":18, "persona": "ambitiousyouth"},
+ {"name":"Sophie", "id":3, "password": "sophie16", "age":16, "persona": "ambitiousyouth"},
+ {"name":"Noah", "id":4, "password": "noah21", "age":21, "persona": "ambitiousyouth"},
+ {"name":"Benjamin", "id":5, "password": "benjamin29", "age":29, "persona": "adventurouscitydweller"},
+ {"name":"Cindy", "id":6, "password": "cindy29", "age":29, "persona": "adventurouscitydweller"},
+ {"name":"Chris", "id":7, "password": "chris37", "age":37, "persona": "adventurouscitydweller"},
+ {"name":"Kate", "id":8, "password": "kate40", "age":40, "persona": "adventurouscitydweller"},
+ {"name":"Gillian", "id":9, "password": "gillian76", "age":76, "persona": "cautioussenior"},
+ {"name":"George", "id":10, "password": "george73", "age":73, "persona": "cautioussenior"},
+ {"name":"Elizabeth", "id":11, "password": "elizabeth68", "age":68, "persona": "cautioussenior"},
+ {"name":"Christopher", "id":12, "password": "christopher66", "age":66, "persona": "cautioussenior"}]
