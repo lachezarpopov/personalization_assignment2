@@ -27,6 +27,8 @@ df_npo = pd.read_csv('./sample_npo.csv')#, sep=';', encoding='utf8'
 #Load users
 df_users = pd.read_json('users.json')
 
+#Trying everything
+
 
 ###Sidebar layout   
 #st.sidebar.image("./NPO.jpg", use_column_width=True)
