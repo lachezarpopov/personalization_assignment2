@@ -22,7 +22,7 @@ hide_menu_style = """
 st.markdown(hide_menu_style, unsafe_allow_html=True) 
 
 # load the dataset with the shows
-df_npo = pd.read_csv('./sample_npo.csv')#, sep=';', encoding='utf8'
+df_npo = pd.read_csv('./sample_npo2.csv')#, sep=';', encoding='utf8'
 
 #Load users
 df_users = pd.read_json('users.json')
@@ -79,7 +79,7 @@ if st.session_state['user'] == 0:
 else:
 
     # create a cover and info column to display the selected show
-    cover, info = st.columns([2, 3])
+    cover, info = st.columns([2, 3]) 
 
     with cover:
       # display the image
@@ -94,12 +94,104 @@ else:
       selectbox = st.selectbox(
         "Rate the show", 
         ('1', '2', '3', '4', '5')) 
-      st.write(se
-      #Explicit and implicit feedback:
-     # with st.expander('Rate the show'):
-     #   st.button('👍', key=random(), on_click=t.activity, args=(df_titles['titles'].values[0], 'Like' ))  
-     #   st.button('👎', key=random(), on_click=t.activity, args=(df_titles['titles'].values[0], 'Dislike')) 
+    #Outcome is in selectbox, maybe we can save the value with the current user? @Zaro
+      st.write('Thanks', selectbox)
         
+    #This works.. but I don't know how to implement something like this in selectbox
+    #This saves to JSON
+    #Explicit and implicit feedback:
+      with st.expander('Rate the show'):
+        st.button('⭐', key=random(), on_click=t.activity, args=(df_titles['titles'].values[0], '1' ))  
+        st.button('⭐⭐', key=random(), on_click=t.activity, args=(df_titles['titles'].values[0], '2')) 
+        st.button('⭐⭐⭐', key=random(), on_click=t.activity, args=(df_titles['titles'].values[0], '3'))
+        st.button('⭐⭐⭐⭐', key=random(), on_click=t.activity, args=(df_titles['titles'].values[0], '4'))
+        st.button('⭐⭐⭐⭐⭐', key=random(), on_click=t.activity, args=(df_titles['titles'].values[0], '5'))
+      
+    
+    #recommendations based on youth,adult,senior column
+        
+    #Shows from youth group:
+    if st.session_state['persona'] == 'ambitiousyouth':
+        st.subheader('Youth might like: ') #title should be changed later on
+        df_recommendations2 = df_npo[df_npo['youth'] == 1]
+        df_recommendations2 = df_recommendations2.sample(5)
+        t.recommendations(df_recommendations2)
+        
+    if st.session_state['persona'] == 'adventurouscitydweller':
+        st.subheader('Adults might like: ') #title should be changed later on
+        df_recommendations2 = df_npo[df_npo['adults'] == 1]
+        df_recommendations2 = df_recommendations2.sample(5)
+        t.recommendations(df_recommendations2)
+        
+    if st.session_state['persona'] == 'cautioussenior':
+        st.subheader('Seniors might like: ') #title should be changed later on
+        df_recommendations2 = df_npo[df_npo['seniors'] == 1]
+        df_recommendations2 = df_recommendations2.sample(5)
+        t.recommendations(df_recommendations2)
+        
+        
+#based on current persona
+        
+    if st.session_state['persona'] in ['adventurouscitydweller', 'cautioussenior']:
+        #Shows from nature genre:
+        st.subheader('Nature: ')
+        df_recommendations2 = df_npo[df_npo['nature'] == 1].sample(5)
+        t.recommendations(df_recommendations2)
+        
+        #Shows from politics genre:
+        st.subheader('Politics: ')
+        df_recommendations10 = df_npo[df_npo['politics'] == 1].sample(5) 
+        t.recommendations(df_recommendations10)
+        
+        #Shows from history genre:
+        st.subheader('History: ')
+        df_recommendations3 = df_npo[df_npo['history'] == 1].sample(5) 
+        t.recommendations(df_recommendations3)
+
+    if st.session_state['persona'] in ['adventurouscitydweller']:
+        #Shows from travel genre:
+        st.subheader('Travel: ')
+        df_recommendations4 = df_npo[df_npo['travel'] == 1].sample(5) 
+        t.recommendations(df_recommendations4)
+        
+        #Shows from education genre:
+        st.subheader('Educational: ')
+        df_recommendations7 = df_npo[df_npo['educational'] == 1].sample(5) 
+        t.recommendations(df_recommendations7)
+        
+    if st.session_state['persona'] in ['ambitiousyouth','adventurouscitydweller', 'cautioussenior']:
+        #Shows from romantic genre:
+        st.subheader('Romantic: ')
+        df_recommendations5 = df_npo[df_npo['romantic'] == 1].sample(5) 
+        t.recommendations(df_recommendations5)
+        
+        #Shows from crime genre:
+        st.subheader('Crime: ')
+        df_recommendations8 = df_npo[df_npo['crime'] == 1].sample(5) 
+        t.recommendations(df_recommendations8)
+
+        #Shows from reality genre:
+        st.subheader('Reality: ') #?
+        df_recommendations12 = df_npo[df_npo['reality'] == 1].sample(5) 
+        t.recommendations(df_recommendations12)
+        
+    if st.session_state['persona'] in ['ambitiousyouth','adventurouscitydweller']:
+        #Shows from diversity genre:
+        st.subheader('Diversity: ')
+        df_recommendations6 = df_npo[df_npo['diversity'] == 1].sample(5) 
+        t.recommendations(df_recommendations6)
+
+    if st.session_state['persona'] in ['ambitiousyouth']:
+        #Shows from action genre:
+        st.subheader('Action: ')
+        df_recommendations9 = df_npo[df_npo['action'] == 1].sample(5) 
+        t.recommendations(df_recommendations9)
+
+        #Shows from teen genre:
+        st.subheader('Teen: ')
+        df_recommendations11 = df_npo[df_npo['teen'] == 1].sample(5) 
+        t.recommendations(df_recommendations11)       
+    
         
     #Shows from same k_means cluster 
     st.subheader('Similar shows like ' + st.session_state['titles'])
@@ -125,73 +217,6 @@ else:
       (df_npo['titles']))
     df = df_npo[df_npo['titles'] == option]  
     t.recommendations(df)
-
-
-
-    
-
-
-    #Shows from nature genre:
-    st.subheader('Nature: ')
-    df_recommendations2 = df_npo[df_npo['nature'] == 1]
-    df_recommendations2 = df_recommendations2.sample(5)
-    t.recommendations(df_recommendations2)
-
-    #Shows from history genre:
-    st.subheader('History: ')
-    df_recommendations3 = df_npo[df_npo['history'] == 1].sample(5) 
-    t.recommendations(df_recommendations3)
-
-    #Shows from travel genre:
-    st.subheader('Travel: ')
-    df_recommendations4 = df_npo[df_npo['travel'] == 1].sample(5) 
-    t.recommendations(df_recommendations4)
-
-    #Shows from romantic genre:
-    st.subheader('Romantic: ')
-    df_recommendations5 = df_npo[df_npo['romantic'] == 1].sample(5) 
-    t.recommendations(df_recommendations5)
-
-    #Shows from diversity genre:
-    st.subheader('Diversity: ')
-    df_recommendations6 = df_npo[df_npo['diversity'] == 1].sample(5) 
-    t.recommendations(df_recommendations6)
-
-    #Shows from education genre:
-    st.subheader('Educational: ')
-    df_recommendations7 = df_npo[df_npo['educational'] == 1].sample(5) 
-    t.recommendations(df_recommendations7)
-
-    #Shows from crime genre:
-    st.subheader('Crime: ')
-    df_recommendations8 = df_npo[df_npo['crime'] == 1].sample(5) 
-    t.recommendations(df_recommendations8)
-
-    #Shows from action genre:
-    st.subheader('Action: ')
-    df_recommendations9 = df_npo[df_npo['action'] == 1].sample(5) 
-    t.recommendations(df_recommendations9)
-
-    #Shows from politics genre:
-    st.subheader('Politics: ')
-    df_recommendations10 = df_npo[df_npo['politics'] == 1].sample(5) 
-    t.recommendations(df_recommendations10)
-
-    #Shows from teen genre:
-    st.subheader('Teen: ')
-    df_recommendations11 = df_npo[df_npo['teen'] == 1].sample(5) 
-    t.recommendations(df_recommendations11)
-
-    #Shows from reality genre:
-    st.subheader('Reality: ')
-    df_recommendations12 = df_npo[df_npo['reality'] == 1].sample(5) 
-    t.recommendations(df_recommendations12)
-    #Adding 10 random recommendations:
-    #chosen_idx = np.random.choice(df_npo.shape[0], replace = True, size = 10)
-    #st.subheader('No inspiration? Other shows you might be interested in ')
-    #df = df_npo.iloc[chosen_idx]
-    #t.recommendations(df)
-
 
 
 
