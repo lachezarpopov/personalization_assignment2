@@ -29,8 +29,8 @@ df_users = pd.read_json('users.json')
 
 
 ###Sidebar layout   
-#st.sidebar.image("./NPO.jpg", use_column_width=True)
-#st.sidebar.title('Welcome to the NPO')
+st.sidebar.image("./NPO.jpg", use_column_width=True)
+st.sidebar.title('Welcome to the NPO')
 
 #add_selectbox = st.sidebar.selectbox(
 #    "How would you like to be contacted?", 
