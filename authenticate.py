@@ -32,7 +32,11 @@ def authenticate():
 		# set user id in session state
 		user_id = int(df_users[df_users['name'] == name]['id'].iloc[0])
 		st.session_state['user'] = user_id
-		
+
+		# set user persona in session state
+		user_persona = df_users[df_users['name'] == name]['persona'].iloc[0]
+		st.session_state['persona'] = user_persona
+        
 	# > if the authentication failed
 	elif st.session_state['authentication_status'] == False:
 		# write an error message on the sidebar
