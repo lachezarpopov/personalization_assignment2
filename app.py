@@ -90,15 +90,8 @@ else:
         st.title(df_npomroep['titles'].iloc[0])
         st.caption(df_npomroep['descriptions'].iloc[0])
         # st.caption(df_npomroep['k_means'].iloc[0])
-    #     selectbox = st.selectbox(
-    #         "Rate the show",
-    #         ('1', '2', '3', '4', '5'))
-    # # Outcome is in selectbox, maybe we can save the value with the current user? @Zaro
-    #     st.write('Thanks', selectbox)
 
-    # This works.. but I don't know how to implement something like this in selectbox
-    # This saves to JSON
-    # Explicit and implicit feedback:
+    # Ratings, this calls the t.rating() function which saves the user, content_id and rating to rating.csv
         with st.expander('Rate the show'):
             st.button('⭐', key=random(), on_click=t.rating,
                       args=(df_titles['ID'].values[0], '1'))
