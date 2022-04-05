@@ -2,6 +2,7 @@ import streamlit as st
 from random import random
 import json
 import datetime
+import pandas as pd
 
 
 # save the activities as a file
