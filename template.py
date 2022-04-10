@@ -3,6 +3,7 @@ from random import random
 import json
 import datetime
 import pandas as pd
+import numpy as np
 
 
 # save the activities as a file
@@ -71,3 +72,44 @@ def recommendations(df):
 
         # apply tile_item to each column-item tuple (created with python 'zip')
         any(tile_item(x[0], x[1]) for x in zip(columns, items))
+
+
+def personalizedRecommendations(ratings, user):
+
+    userRatings = ratings.pivot(
+        index='content_id', columns='user', values='rating').fillna(np.nan)[user]
+    userItemMatrix = ratings.pivot(index='content_id', columns='user', values='rating').fillna(
+        np.nan).drop(user, axis='columns')
+
+    # Calculating user similarities
+    user_similarities = userItemMatrix.apply(
+        userRatings.corr, axis=0)
+    neighbourhood_similarities = user_similarities[user_similarities > 0.10]
+
+    # Filtering userItemMatrix for similar users only
+    similar_users = userItemMatrix.loc[:, user_similarities > 0.10]
+
+    # Creating neighbourhood_unseen df
+    # the shows unseen by the target user that appear in the neightbourhood of similar users
+    neighbourhood_unseen = similar_users[~similar_users.index.isin(
+        userRatings[userRatings.isna()].index)]
+
+    # Applying weights (based on similarity) to ratings
+    def apply_weights(x): return x * neighbourhood_similarities[x.name]
+    weighted_scores = neighbourhood_unseen.apply(apply_weights)
+
+    # Filtering out shows that have been rated by less than n_users**0.5 number of users
+    n_users = weighted_scores.shape[1]
+    unseen_min_neighbourhood = weighted_scores[weighted_scores.transpose(
+    ).count() >= n_users**0.5]
+
+    # Calculating similarity-weighted recommendations
+    def weighted_rating(show): return show.sum() / \
+        neighbourhood_similarities[show.notna()].sum()
+    personalized_recommendations = unseen_min_neighbourhood.apply(
+        weighted_rating, axis=1).sort_values(ascending=False).head(5)
+
+    personalized_recommendations = personalized_recommendations.round(
+        2)  # rounding the predicted rating
+
+    return personalized_recommendations

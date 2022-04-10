@@ -106,6 +106,14 @@ else:
 
     # recommendations based on youth,adult,senior column
 
+    # personalized recommendations
+    st.subheader('Personalized recommendations based on similar users')
+    personalized_recommendations = t.personalizedRecommendations(
+        st.session_state['ratings'], st.session_state['user'])
+    df_recommendations2 = df_npo[df_npo['ID'].isin(
+        personalized_recommendations.index)]
+    t.recommendations(df_recommendations2)
+
     # Shows from youth group:
     if st.session_state['persona'] == 'ambitiousyouth':
         st.subheader('Youth might like: ')  # title should be changed later on
