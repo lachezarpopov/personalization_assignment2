@@ -15,7 +15,7 @@ st.set_page_config(layout="wide", page_title='NPO prototype', page_icon=img)
 # Hide made with streamlit:
 hide_menu_style = """
         <style>
-        #MainMenu {visibility: hidden;} 
+        # MainMenu {visibility: hidden;}
         footer {visibility: hidden;}
         </style>
         """
@@ -45,13 +45,15 @@ with open('activities.json') as json_file:
 
 
 # Main page layout:
-#st.image("./NPO.jpg", use_column_width=True)
+# st.image("./NPO.jpg", use_column_width=True)
 st.header('Start watching on NPO' + '  ' + '     ▶️ ')
 
-# Create session state:
+
+# Create session state variables:
 
 if 'titles' not in st.session_state:
-    st.session_state['titles'] = 'Vlaamse Meiden die Rijden '
+    random_index = np.random.randint(0, df_npo.shape[0])
+    st.session_state['titles'] = df_npo.iloc[random_index]['titles']
 
 if 'user' not in st.session_state:
     st.session_state['user'] = 0
@@ -68,7 +70,7 @@ a.authenticate()
 # Select title
 df_titles = df_npo[df_npo['titles'] == st.session_state['titles']]
 
-#
+# Select title
 df_npomroep = df_npo[df_npo['titles'] == st.session_state['titles']]
 
 if st.session_state['authentication_status'] != True:
@@ -76,6 +78,12 @@ if st.session_state['authentication_status'] != True:
 
 
 else:
+
+    # Dropdown for own choice
+    # st.subheader('Choose the show you want to watch ')
+    option = st.selectbox(
+        'Select your favorite show and click play to start watching!',
+        (df_npo['titles']), key='select_show', on_change=t.select_show_selectbox)
 
     # create a cover and info column to display the selected show
     cover, info = st.columns([2, 3])
@@ -106,8 +114,20 @@ else:
 
     # recommendations based on youth,adult,senior column
 
+    # Shows from same k_means cluster
+    st.subheader('Similar shows to ' + st.session_state['titles'])
+    if st.session_state['persona'] == 'adventurouscitydweller':
+        st.write(
+            f'Shows similar to {st.session_state["titles"]} based on their content as found in the descriptions and other metadata')
+    df_recommendations = df_npo[df_npo['k_means']
+                                == df_npomroep['k_means'].iloc[0]].sample(5)
+    t.recommendations(df_recommendations)
+
     # personalized recommendations
     st.subheader('Personalized recommendations based on similar users')
+    if st.session_state['persona'] == 'adventurouscitydweller':
+        st.write(
+            f'Recommendations based on the highest rated items by users with similar preferences as you')
     personalized_recommendations = t.personalizedRecommendations(
         st.session_state['ratings'], st.session_state['user'])
     df_recommendations2 = df_npo[df_npo['ID'].isin(
@@ -116,26 +136,37 @@ else:
 
     # Shows from youth group:
     if st.session_state['persona'] == 'ambitiousyouth':
-        st.subheader('Youth might like: ')  # title should be changed later on
+        # title should be changed later on
+        st.subheader('Editorial picks for you')
         df_recommendations2 = df_npo[df_npo['youth'] == 1]
         df_recommendations2 = df_recommendations2.sample(5)
         t.recommendations(df_recommendations2)
 
     if st.session_state['persona'] == 'adventurouscitydweller':
-        st.subheader('Adults might like: ')  # title should be changed later on
+        # title should be changed later on
+        st.subheader('Editorial picks for you')
+        st.write(
+            f'Editorial picks for your profile based on your user demographics')
         df_recommendations2 = df_npo[df_npo['adults'] == 1]
         df_recommendations2 = df_recommendations2.sample(5)
         t.recommendations(df_recommendations2)
 
     if st.session_state['persona'] == 'cautioussenior':
         # title should be changed later on
-        st.subheader('Seniors might like: ')
+        st.subheader('Editorial picks for you')
         df_recommendations2 = df_npo[df_npo['seniors'] == 1]
         df_recommendations2 = df_recommendations2.sample(5)
         t.recommendations(df_recommendations2)
 
 
 # based on current persona
+
+    if st.session_state['persona'] in ['ambitiousyouth', 'adventurouscitydweller']:
+        # Shows from diversity genre:
+        st.subheader(
+            'Explore the richness of society through diversity-focused content')
+        df_recommendations6 = df_npo[df_npo['diversity'] == 1].sample(5)
+        t.recommendations(df_recommendations6)
 
     if st.session_state['persona'] in ['adventurouscitydweller', 'cautioussenior']:
         # Shows from nature genre:
@@ -180,12 +211,6 @@ else:
         df_recommendations12 = df_npo[df_npo['reality'] == 1].sample(5)
         t.recommendations(df_recommendations12)
 
-    if st.session_state['persona'] in ['ambitiousyouth', 'adventurouscitydweller']:
-        # Shows from diversity genre:
-        st.subheader('Diversity: ')
-        df_recommendations6 = df_npo[df_npo['diversity'] == 1].sample(5)
-        t.recommendations(df_recommendations6)
-
     if st.session_state['persona'] in ['ambitiousyouth']:
         # Shows from action genre:
         st.subheader('Action: ')
@@ -197,25 +222,11 @@ else:
         df_recommendations11 = df_npo[df_npo['teen'] == 1].sample(5)
         t.recommendations(df_recommendations11)
 
-    # Shows from same k_means cluster
-    st.subheader('Similar shows like ' + st.session_state['titles'])
-    df_recommendations = df_npo[df_npo['k_means']
-                                == df_npomroep['k_means'].iloc[0]].sample(5)
-    t.recommendations(df_recommendations)
-
-    #st.subheader('Start watching on NPO ')
+    # st.subheader('Start watching on NPO ')
     st.subheader('Select your favorite genre ')
     option2 = st.selectbox(
-        ' ',
+        '',
         ('nature', 'history', 'travel', 'romantic', 'diversity', 'educational', 'crime', 'action', 'politics', 'teen', 'reality'))
-    st.subheader('Shows from ' + option2)
+    # st.subheader('Shows from ' + option2)
     df_recommendations = df_npo[df_npo[option2] == 1].sample(6)
     t.recommendations(df_recommendations)
-
-    # Dropdown for own choice
-    st.subheader('Choose the show you want to watch ')
-    option = st.selectbox(
-        'Select your favorite show and click play to start watching!',
-        (df_npo['titles']))
-    df = df_npo[df_npo['titles'] == option]
-    t.recommendations(df)

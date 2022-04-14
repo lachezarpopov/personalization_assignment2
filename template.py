@@ -47,10 +47,17 @@ def select_show(title):
     st.session_state['titles'] = title
     activity(title, 'Select title')
 
+# set episode session state
+
+
+def select_show_selectbox():
+    st.session_state['titles'] = st.session_state['select_show']
+    activity(st.session_state['titles'], 'Select title')
+
 
 def tile_item(column, item):
     with column:
-        st.button('▶️', key=random(), on_click=select_show,
+        st.button('PLAY ▶️', key=random(), on_click=select_show,
                   args=(item['titles'], ))
         st.image(item['pictures'], use_column_width='always')
         st.caption(item['titles'])
